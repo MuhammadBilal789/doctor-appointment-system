@@ -9,11 +9,11 @@ import { BookingModule } from "./booking/booking.module";
 
 @Module({
   imports: [
-    // MongooseModule.forRoot('mongodb+srv://admin:helloworld123@cluster0.l5fn7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
+    MongooseModule.forRoot('mongodb+srv://adminDB:helloworld123@cluster0.l5fn7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'),
     ConfigModule.forRoot({ isGlobal: true }),
-    // SlotModule,
-    // BookingModule,
-    // DoctorModule,
+    SlotModule,
+    BookingModule,
+    DoctorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
