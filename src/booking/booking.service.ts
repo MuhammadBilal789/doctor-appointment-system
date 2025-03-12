@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBookingDto } from './dto/create-booking.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Booking } from './schemas/booking.schema';
-import { Model, Types, FilterQuery } from 'mongoose';
+import { Injectable } from "@nestjs/common";
+import { CreateBookingDto } from "./dto/create-booking.dto";
+import { InjectModel } from "@nestjs/mongoose";
+import { Booking } from "./schemas/booking.schema";
+import { Model, Types, FilterQuery } from "mongoose";
 
 @Injectable()
 export class BookingService {
@@ -33,7 +33,7 @@ export class BookingService {
     return this.bookingModel
       .find(filter)
       .populate({
-        path: 'slot_id',
+        path: "slot_id",
         match: { doctor_id: new Types.ObjectId(doctorId) },
       })
       .exec();

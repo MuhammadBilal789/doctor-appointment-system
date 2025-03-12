@@ -1,10 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateDoctorDto {
   @ApiProperty({
-    description: 'Unique username for the doctor',
-    example: 'dr_johndoe',
+    description: "Unique username for the doctor",
+    example: "dr_johndoe",
   })
   @IsNotEmpty()
   @IsString()
@@ -12,7 +12,7 @@ export class CreateDoctorDto {
 
   @ApiProperty({
     description: "Doctor's first name",
-    example: 'John',
+    example: "John",
   })
   @IsNotEmpty()
   @IsString()
@@ -20,7 +20,7 @@ export class CreateDoctorDto {
 
   @ApiProperty({
     description: "Doctor's last name",
-    example: 'Doe',
+    example: "Doe",
   })
   @IsNotEmpty()
   @IsString()
@@ -28,7 +28,7 @@ export class CreateDoctorDto {
 
   @ApiProperty({
     description: "Doctor's unique email address",
-    example: 'john.doe@example.com',
+    example: "john.doe@example.com",
     uniqueItems: true,
   })
   @IsNotEmpty()

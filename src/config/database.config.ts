@@ -1,4 +1,4 @@
-import { registerAs } from '@nestjs/config';
+import { registerAs } from "@nestjs/config";
 
 export interface DatabaseConfig {
   host: string;
@@ -8,11 +8,11 @@ export interface DatabaseConfig {
 }
 
 export default registerAs(
-  'database',
+  "database",
   (): DatabaseConfig => ({
-    host: process.env.DATABASE_HOST || 'localhost:27017',
-    name: process.env.DATABASE_NAME || 'nest',
-    user: process.env.DATABASE_USER || '',
-    password: process.env.DATABASE_PASSWORD || '',
+    host: process.env.DATABASE_HOST || "localhost:27017",
+    name: process.env.DATABASE_NAME || "nest",
+    user: process.env.DATABASE_USER || "",
+    password: process.env.DATABASE_PASSWORD || "",
   }),
 );
