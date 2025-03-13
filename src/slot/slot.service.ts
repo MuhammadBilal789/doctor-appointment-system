@@ -1,4 +1,9 @@
-import { Injectable } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { CreateSlotDto } from "./dto/create-slot.dto";
 import { InjectModel } from "@nestjs/mongoose";
 import { Slot } from "./schemas/slot.schema";
@@ -28,6 +33,19 @@ export class SlotService {
     const startDate = new Date(start_time);
     const endDate = new Date(end_time);
     const yearEnd = new Date(startDate.getFullYear(), 11, 31);
+
+    // Check for overlapping slots
+    const existingSlots = await this.slotModel.find({
+      doctor_id: new Types.ObjectId(doctorId),
+      $or: [
+        { start_time: { $lte: endDate }, end_time: { $gte: startDate } },
+        { start_time: { $lte: startDate }, end_time: { $gte: endDate } },
+      ],
+    });
+
+    if (existingSlots.length > 0) {
+      throw new ConflictException("Overlapping slots exist");
+    }
 
     // Map day names to Date.getDay() numbers
     const daysOfWeekMap: Record<string, number> = {
@@ -87,7 +105,7 @@ export class SlotService {
     for (
       let day = new Date(startDate);
       day <= yearEnd;
-      day.setDate(day.getDate() + 1)
+      day = new Date(day.getTime() + 86400000)
     ) {
       if (shouldGenerateSlot(day)) {
         generateTimeSlots(day);
@@ -98,18 +116,13 @@ export class SlotService {
   }
 
   async bookSlot(slotId: string): Promise<Slot> {
-    const filter = {
-      _id: new Types.ObjectId(slotId),
-      status: "available",
-    };
-    const update = {
-      $set: {
-        status: "booked",
-      },
-    };
-    const options = {
-      new: true,
-    };
+    if (!Types.ObjectId.isValid(slotId)) {
+      throw new BadRequestException("Invalid slot ID");
+    }
+
+    const filter = { _id: new Types.ObjectId(slotId), status: "available" };
+    const update = { $set: { status: "booked" } };
+    const options = { new: true };
 
     const updatedSlot = await this.slotModel.findOneAndUpdate(
       filter,
@@ -117,24 +130,32 @@ export class SlotService {
       options,
     );
 
-    return updatedSlot as Slot;
+    if (!updatedSlot) {
+      throw new NotFoundException("Slot not found or already booked");
+    }
+
+    return updatedSlot;
   }
 
   async listAvailableSlots(
     doctorId: string,
     startDate?: string,
     endDate?: string,
-  ) {
+  ): Promise<Slot[]> {
     const filter: any = {
       doctor_id: new Types.ObjectId(doctorId),
       status: "available",
     };
 
     if (startDate && endDate) {
-      filter.start_time = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
-      };
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+        throw new BadRequestException("Invalid date format");
+      }
+
+      filter.start_time = { $gte: start, $lte: end };
     }
 
     return this.slotModel.find(filter).exec();
