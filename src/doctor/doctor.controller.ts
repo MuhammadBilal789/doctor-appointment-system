@@ -15,8 +15,8 @@ import { Doctor } from "./schemas/doctor.schema";
 import { Slot } from "src/slot/schemas/slot.schema";
 import { Booking } from "src/booking/schemas/booking.schema";
 
-@ApiTags("Doctor")
-@Controller("doctor")
+@ApiTags("Doctors")
+@Controller("doctors")
 export class DoctorController {
   constructor(
     private readonly slotService: SlotService,
