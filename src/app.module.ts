@@ -10,7 +10,7 @@ import { BookingModule } from "./booking/booking.module";
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MongooseModule.forRoot(process.env.MONGO_ATLAS_URL || ""),
+    MongooseModule.forRoot(process.env.DATABASE_URI || ""),
     SlotModule,
     BookingModule,
     DoctorModule,
